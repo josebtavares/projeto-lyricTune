@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Albums Frontend</title>
+</head>
+<body>
+
+<div id="albums-container"></div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Function to fetch albums and display them
+    function fetchAlbums() {
+        fetch('/api/albums')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(albums => {
+                displayAlbums(albums);
+            })
+            .catch(error => {
+                console.error('Error fetching albums:', error);
+            });
+    }
+
+    // Function to display albums on the webpage
+    function displayAlbums(albums) {
+        const albumsContainer = document.getElementById('albums-container');
+
+        // Clear previous content
+        albumsContainer.innerHTML = '';
+
+        // Create HTML elements for each album
+        albums.forEach(album => {
+            const albumDiv = document.createElement('div');
+            albumDiv.innerHTML = `<h3>${album.name}</h3>
+                                  <p>Artist: ${album.artist}</p>
+                                  <p>Release Date: ${album.release_date}</p>
+                                  <p>Runtime: ${album.runtime}</p>
+                                  <p>Description: ${album.description}</p>
+                                  <img src="${album.photo_url}" alt="Album Photo">
+                                  <hr>`;
+            albumsContainer.appendChild(albumDiv);
+        });
+    }
+
+    // Fetch albums when the page loads
+    fetchAlbums();
+});
+</script>
+
+</body>
+</html>
