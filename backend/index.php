@@ -16,7 +16,7 @@ require_once './Routes/PlaylistRoute.php';
 $host = 'localhost';
 $dbname = 'lyricTune';
 $username = 'root';
-$password = 'jomabata';
+$password = '';
 
 try {
     $db = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
