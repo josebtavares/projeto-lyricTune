@@ -1,13 +1,13 @@
 <?php
 
-class PlaylistController
+class AdminController
 {
 
-    private $playlistService;
+    private $adminService;
 
-    public function __construct($playlistService)
+    public function __construct($adminService)
     {
-        $this->playlistService = $playlistService;
+        $this->adminService = $adminService;
     }
 
     public function create()
@@ -15,15 +15,15 @@ class PlaylistController
         $requestData = json_decode(file_get_contents('php://input'), true);
 
         // Check for required fields
-        if (!$requestData  || empty($requestData['client_id']) ) {
+        if (!$requestData  || empty($requestData['user_id'])) {
             $this->sendJsonResponse(['error' => 'Invalid request data'], 400);
             return;
         }
 
         try {
             // Additional validation or sanitization can be added here if needed
-            $createdplaylist = $this->playlistService->create($requestData);
-            $this->sendJsonResponse($createdplaylist, 201);
+            $createdadmin = $this->adminService->create($requestData);
+            $this->sendJsonResponse($createdadmin, 201);
         } catch (PDOException $e) {
             $this->sendJsonResponse(['error' => 'Database error: ' . $e->getMessage()], 500);
         }
@@ -32,8 +32,8 @@ class PlaylistController
     public function getAll()
     {
         try {
-            $playlists = $this->playlistService->getAll();
-            $this->sendJsonResponse($playlists);
+            $admins = $this->adminService->getAll();
+            $this->sendJsonResponse($admins);
         } catch (PDOException $e) {
             $this->sendJsonResponse(["error" => "Database error: " . $e->getMessage()], 500);
         }
@@ -42,11 +42,11 @@ class PlaylistController
     public function getById($id)
     {
         try {
-            $playlist = $this->playlistService->getById($id);
-            if ($playlist) {
-                $this->sendJsonResponse($playlist);
+            $admin = $this->adminService->getById($id);
+            if ($admin) {
+                $this->sendJsonResponse($admin);
             } else {
-                $this->sendJsonResponse(["error" => "Playlist not found"], 404);
+                $this->sendJsonResponse(["error" => "Admin not found"], 404);
             }
         } catch (PDOException $e) {
             $this->sendJsonResponse(["error" => "Database error: " . $e->getMessage()], 500);
@@ -63,12 +63,12 @@ class PlaylistController
         }
 
         try {
-            $updatedPlaylist= $this->playlistService->update($id, $requestData);
+            $updatedAdmin= $this->adminService->update($id, $requestData);
 
-            if ($updatedPlaylist) {
-                $this->sendJsonResponse($updatedPlaylist);
+            if ($updatedAdmin) {
+                $this->sendJsonResponse($updatedAdmin);
             } else {
-                $this->sendJsonResponse(['error' => 'Playlist not found'], 404);
+                $this->sendJsonResponse(['error' => 'Admin not found'], 404);
             }
         } catch (PDOException $e) {
             $this->sendJsonResponse(['error' => 'Database error: ' . $e->getMessage()], 500);
@@ -77,12 +77,12 @@ class PlaylistController
 
    public function delete($id) {
     try {
-        $isDeleted = $this->playlistService->delete($id);
+        $isDeleted = $this->adminService->delete($id);
 
         if ($isDeleted) {
-            $this->sendJsonResponse(['message'=> 'Playlist deleted successfuly']);
+            $this->sendJsonResponse(['message'=> 'Admin deleted successfuly']);
         } else {
-            $this->sendJsonResponse(['error'=> 'Playlist not found'], 404);
+            $this->sendJsonResponse(['error'=> 'Admin not found'], 404);
         }
         
     } catch (PDOException $e) {

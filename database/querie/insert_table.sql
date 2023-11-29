@@ -1,9 +1,9 @@
 use lyricTune;
 SET SQL_SAFE_UPDATES = 0;
 
-delete from client_has_albums;
-delete from client_has_artists;
-delete from client_has_playlists;
+delete from client_album;
+delete from client_artist;
+delete from client_playlist;
 delete from genre_music;
 delete from playlist_music;
 delete from playlist;
@@ -25,9 +25,9 @@ ALTER TABLE genre AUTO_INCREMENT = 1;
 ALTER TABLE playlist AUTO_INCREMENT = 1;
 ALTER TABLE playlist_music AUTO_INCREMENT = 1;
 ALTER TABLE genre_music AUTO_INCREMENT = 1;
-ALTER TABLE client_has_playlists AUTO_INCREMENT = 1;
-ALTER TABLE client_has_artists AUTO_INCREMENT = 1;
-ALTER TABLE client_has_albums AUTO_INCREMENT = 1;
+ALTER TABLE client_playlist AUTO_INCREMENT = 1;
+ALTER TABLE client_artist AUTO_INCREMENT = 1;
+ALTER TABLE client_album AUTO_INCREMENT = 1;
 
 insert into user(name, email, password,photo_url) values("Jose Tavares","jose@gmail.com","jomabata","https://i.ibb.co/Sxzy0gJ/370220406-1798779677235042-7349493873271545530-n.jpg");
 insert into client(user_id,description)values(1,"Music Lover");
