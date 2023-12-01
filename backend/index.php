@@ -14,13 +14,19 @@ require_once './Routes/ClientArtistRoute.php';
 require_once './Routes/ClientPlaylistRoute.php';
 //Playlist_Music
 require_once './Routes/PlaylistMusicRoute.php';
+//Genre
+require_once './Routes/GenreRoute.php';
+//Music
+require_once './Routes/MusicRoute.php';
+//Genre_Music
+require_once './Routes/GenreMusicRoute.php';
 
 
 //Database Configuration
 $host = 'localhost';
 $dbname = 'lyricTune';
 $username = 'root';
-$password = 'jomabata';
+$password = '';
 
 try {
     $db = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
@@ -47,8 +53,12 @@ $client_artistRoute = new ClientArtistRoute($db);
 $client_playlistRoute = new ClientPlaylistRoute($db);
 // Playlist_Music
 $playlist_musicRoute = new PlaylistMusictRoute($db);
-
-
+// Genre
+$genreRoute = new GenreRoute($db);
+// Music;
+$musicRoute = new MusicRoute($db);
+// Genre_Music
+$genre_musicRoute = new GenreMusicRoute($db);
 
 
 
@@ -60,6 +70,9 @@ if($client_albumRoute->handleRequest($method, $uri)) return;
 if($client_artistRoute->handleRequest($method, $uri)) return;
 if($client_playlistRoute->handleRequest($method, $uri)) return;
 if($playlist_musicRoute->handleRequest($method, $uri)) return;
+if($genreRoute->handleRequest($method, $uri)) return;
+if($musicRoute->handleRequest($method, $uri)) return;
+if($genre_musicRoute->handleRequest($method, $uri)) return;
 
 // Handle invalid routes with a 404 status code
 sendJsonResponse(['error' => 'Not Found'], 404);
