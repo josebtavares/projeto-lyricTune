@@ -1,4 +1,4 @@
--- lyricTune.artist definition
+	-- lyricTune.artist definition
 
 
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
@@ -33,10 +33,10 @@ DROP table IF EXISTS artist;
 CREATE TABLE `artist` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL,
-  `genre` varchar(45) DEFAULT 'Unknown Genre',
-  `description` varchar(500) DEFAULT 'No Description',
-  `photo_url` varchar(200) DEFAULT 'https://i.ibb.co/xFFfc2N/default-profile-img.jpg',
-  `description_photo_url` varchar(200) DEFAULT 'https://i.ibb.co/tXNsJpn/description-default-img.jpg',
+  `genre` varchar(45) DEFAULT "Unknown Genre",
+  `description` varchar(500) DEFAULT "No Description",
+  `photo_url` varchar(200) DEFAULT "https://i.ibb.co/xFFfc2N/default-profile-img.jpg",
+  `description_photo_url` varchar(200) DEFAULT "https://i.ibb.co/tXNsJpn/description-default-img.jpg",
   PRIMARY KEY (`id`)
 );
 
@@ -57,7 +57,10 @@ CREATE TABLE `user` (
   `name` varchar(45) NOT NULL,
   `email` varchar(45) NOT NULL,
   `password` varchar(45) NOT NULL,
-  `photo_url` varchar(200) DEFAULT 'https://i.ibb.co/xFFfc2N/default-profile-img.jpg',
+  `photo_url` varchar(200) DEFAULT "https://i.ibb.co/xFFfc2N/default-profile-img.jpg",
+  `token` varchar(1000) NULL,
+  `birth_date` date NULL,
+  `register_date` timestamp DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
 ) ;
 
@@ -82,8 +85,8 @@ CREATE TABLE `album` (
   `release_date` date DEFAULT '2000/01/01',
   `runtime` int NOT NULL,
   `artist_id` int NOT NULL,
-  `description` varchar(500) DEFAULT 'No Description',
-  `description_photo_url` varchar(200) DEFAULT 'https://i.ibb.co/tXNsJpn/description-default-img.jpg',
+  `description` varchar(500) DEFAULT "No Description",
+  `description_photo_url` varchar(200) DEFAULT "https://i.ibb.co/tXNsJpn/description-default-img.jpg",
   PRIMARY KEY (`id`),
   KEY `fk_album_artist1_idx` (`artist_id`),
   CONSTRAINT `fk_album_artist1` FOREIGN KEY (`artist_id`) REFERENCES `artist` (`id`)
@@ -95,7 +98,7 @@ CREATE TABLE `album` (
 CREATE TABLE `client` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
-  `description` varchar(45) DEFAULT 'Hello There',
+  `description` varchar(45) DEFAULT "Hello There",
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_id_UNIQUE` (`user_id`),
   KEY `fk_client_user_idx` (`user_id`),
@@ -106,9 +109,9 @@ CREATE TABLE `client` (
 -- lyricTune.client_album definition
 
 CREATE TABLE `client_album` (
-  `id` int PRIMARY KEY AUTO_INCREMENT,
   `client_id` int NOT NULL,
   `album_id` int NOT NULL,
+  PRIMARY KEY (`client_id`,`album_id`),
   KEY `fk_client_has_album_album1_idx` (`album_id`),
   KEY `fk_client_has_album_client1_idx` (`client_id`),
   CONSTRAINT `fk_client_has_album_album1` FOREIGN KEY (`album_id`) REFERENCES `album` (`id`),
@@ -119,9 +122,9 @@ CREATE TABLE `client_album` (
 -- lyricTune.client_artist definition
 
 CREATE TABLE `client_artist` (
-  `id` int PRIMARY KEY AUTO_INCREMENT,
   `client_id` int NOT NULL,
   `artist_id` int NOT NULL,
+  PRIMARY KEY (`client_id`,`artist_id`),
   KEY `fk_client_has_artist_artist1_idx` (`artist_id`),
   KEY `fk_client_has_artist_client1_idx` (`client_id`),
   CONSTRAINT `fk_client_has_artist_artist1` FOREIGN KEY (`artist_id`) REFERENCES `artist` (`id`),
@@ -135,10 +138,10 @@ CREATE TABLE `music` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL,
   `runtime` time NOT NULL,
-  `description` varchar(45) DEFAULT 'No Description',
-  `composer` varchar(45) DEFAULT 'No Composer',
+  `description` varchar(45) DEFAULT "No Description",
+  `composer` varchar(45) DEFAULT "No Composer",
   `release_date` date DEFAULT '2000/01/01',
-  `photo_url` varchar(45) DEFAULT 'https://i.ibb.co/cTNmNM7/song-cover.png',
+  `photo_url` varchar(45) DEFAULT "https://i.ibb.co/cTNmNM7/song-cover.png",
   `lyrics` varchar(45) DEFAULT 'No Lyrics',
   `status` ENUM('Available', 'Suspended', 'Banned') NOT NULL,
   `url` varchar(45) NOT NULL,
@@ -158,7 +161,7 @@ CREATE TABLE `playlist` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(45) DEFAULT NULL,
   `client_id` int NOT NULL,
-  `photo_url` varchar(200) DEFAULT 'https://i.ibb.co/G2NyD9B/playlist-default-img.png',
+  `photo_url` varchar(200) DEFAULT "https://i.ibb.co/G2NyD9B/playlist-default-img.png",
   PRIMARY KEY (`id`),
   KEY `fk_playlist_client1_idx` (`client_id`),
   CONSTRAINT `fk_playlist_client1` FOREIGN KEY (`client_id`) REFERENCES `client` (`id`)
@@ -168,9 +171,9 @@ CREATE TABLE `playlist` (
 -- lyricTune.playlist_music definition
 
 CREATE TABLE `playlist_music` (
-  `id` int PRIMARY KEY AUTO_INCREMENT,  
   `playlist_id` int NOT NULL,
   `music_id` int NOT NULL,
+  PRIMARY KEY (`playlist_id`,`music_id`),
   KEY `fk_playlist_has_music_music1_idx` (`music_id`),
   KEY `fk_playlist_has_music_playlist1_idx` (`playlist_id`),
   CONSTRAINT `fk_playlist_has_music_music1` FOREIGN KEY (`music_id`) REFERENCES `music` (`id`),
@@ -181,9 +184,9 @@ CREATE TABLE `playlist_music` (
 -- lyricTune.client_playlist definition
 
 CREATE TABLE `client_playlist` (
-  `id` int PRIMARY KEY AUTO_INCREMENT,
   `client_id` int NOT NULL,
   `playlist_id` int NOT NULL,
+  PRIMARY KEY (`client_id`,`playlist_id`),
   KEY `fk_client_has_playlist_playlist1_idx` (`playlist_id`),
   KEY `fk_client_has_playlist_client1_idx` (`client_id`),
   CONSTRAINT `fk_client_has_playlist_client1` FOREIGN KEY (`client_id`) REFERENCES `client` (`id`),
@@ -194,9 +197,9 @@ CREATE TABLE `client_playlist` (
 -- lyricTune.genre_music definition
 
 CREATE TABLE `genre_music` (
-  `id` int PRIMARY KEY AUTO_INCREMENT,   
   `genre_id` int NOT NULL,
   `music_id` int NOT NULL,
+  PRIMARY KEY (`genre_id`,`music_id`),
   KEY `fk_genre_has_music_music1_idx` (`music_id`),
   KEY `fk_genre_has_music_genre1_idx` (`genre_id`),
   CONSTRAINT `fk_genre_has_music_genre1` FOREIGN KEY (`genre_id`) REFERENCES `genre` (`id`),

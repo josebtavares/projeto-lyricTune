@@ -1,11 +1,13 @@
 <?php
 
+require_once './Services/AlbumService.php';
+
 class AlbumController{
 
     private $albumService;
 
-    public function __construct($albumService){
-        $this->albumService = $albumService;
+    public function __construct($db){
+        $this->albumService = new AlbumService($db);
     }
 
     public function create() {
@@ -30,7 +32,7 @@ class AlbumController{
     public function getAll(){
         try{
             $albums = $this->albumService->getAll();
-            $this->sendJsonResponse($albums);
+            $this->sendJsonResponse($albums,200);
         }
         catch(PDOException $e){
             $this->sendJsonResponse([ "error"=> "Database error: ".$e->getMessage()],500);
@@ -41,7 +43,7 @@ class AlbumController{
         try{
             $album = $this->albumService->getById($id);
             if($album){
-                $this->sendJsonResponse($album);
+                $this->sendJsonResponse($album,200);
             }
             else{
                 $this->sendJsonResponse(["error"=> "Album not found"],404);
@@ -53,11 +55,7 @@ class AlbumController{
 
     }
 
-    private function sendJsonResponse($data, $statusCode = 200){
-        header("Content-Type: application/json");
-        http_response_code($statusCode);
-        echo json_encode($data);
-    }
+    
 
     public function update($id) {
         $requestData = json_decode(file_get_contents('php://input'), true);
@@ -71,7 +69,7 @@ class AlbumController{
             $updatedAlbum = $this->albumService->update($id, $requestData);
 
             if ($updatedAlbum) {
-                $this->sendJsonResponse($updatedAlbum);
+                $this->sendJsonResponse($updatedAlbum,200);
             } else {
                 $this->sendJsonResponse(['error' => 'Album not found'], 404);
             }
@@ -85,7 +83,7 @@ class AlbumController{
             $isDeleted = $this->albumService->delete($id);
 
             if ($isDeleted) {
-                $this->sendJsonResponse(['message' => 'Album deleted successfully']);
+                $this->sendJsonResponse(['message' => 'Album deleted successfully'],200);
             } else {
                 $this->sendJsonResponse(['error' => 'Album not found'], 404);
             }
@@ -93,5 +91,12 @@ class AlbumController{
             $this->sendJsonResponse(['error' => 'Database error: ' . $e->getMessage()], 500);
         }
     }
+
+    private function sendJsonResponse($data, $statusCode = 404){
+        header("Content-Type: application/json");
+        http_response_code($statusCode);
+        echo json_encode($data);
+    }
+    
     
 }

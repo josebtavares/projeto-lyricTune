@@ -1,13 +1,15 @@
 <?php
 
+require_once './Services/PlaylistService.php';
+
 class PlaylistController
 {
 
     private $playlistService;
 
-    public function __construct($playlistService)
+    public function __construct($db)
     {
-        $this->playlistService = $playlistService;
+        $this->playlistService = new PlaylistService($db);
     }
 
     public function create()
@@ -15,7 +17,7 @@ class PlaylistController
         $requestData = json_decode(file_get_contents('php://input'), true);
 
         // Check for required fields
-        if (!$requestData  || empty($requestData['client_id']) ) {
+        if (!$requestData  || empty($requestData['client_id'])) {
             $this->sendJsonResponse(['error' => 'Invalid request data'], 400);
             return;
         }
@@ -33,7 +35,7 @@ class PlaylistController
     {
         try {
             $playlists = $this->playlistService->getAll();
-            $this->sendJsonResponse($playlists);
+            $this->sendJsonResponse($playlists,200);
         } catch (PDOException $e) {
             $this->sendJsonResponse(["error" => "Database error: " . $e->getMessage()], 500);
         }
@@ -44,7 +46,7 @@ class PlaylistController
         try {
             $playlist = $this->playlistService->getById($id);
             if ($playlist) {
-                $this->sendJsonResponse($playlist);
+                $this->sendJsonResponse($playlist,200);
             } else {
                 $this->sendJsonResponse(["error" => "Playlist not found"], 404);
             }
@@ -66,7 +68,7 @@ class PlaylistController
             $updatedPlaylist= $this->playlistService->update($id, $requestData);
 
             if ($updatedPlaylist) {
-                $this->sendJsonResponse($updatedPlaylist);
+                $this->sendJsonResponse($updatedPlaylist,200);
             } else {
                 $this->sendJsonResponse(['error' => 'Playlist not found'], 404);
             }
@@ -80,7 +82,7 @@ class PlaylistController
         $isDeleted = $this->playlistService->delete($id);
 
         if ($isDeleted) {
-            $this->sendJsonResponse(['message'=> 'Playlist deleted successfuly']);
+            $this->sendJsonResponse(['message'=> 'Playlist deleted successfuly'],200);
         } else {
             $this->sendJsonResponse(['error'=> 'Playlist not found'], 404);
         }
@@ -97,4 +99,5 @@ class PlaylistController
         http_response_code($statusCode);
         echo json_encode($data);
     }
+    
 }

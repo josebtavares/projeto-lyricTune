@@ -1,31 +1,19 @@
 <?php
 
 //Album
-require_once './Services/AlbumService.php';
-require_once './Controllers/AlbumController.php';
 require_once './Routes/AlbumRoute.php';
-
 //Playlist
-require_once './Services/PlaylistService.php';
-require_once './Controllers/PlaylistController.php';
 require_once './Routes/PlaylistRoute.php';
-
 //Admin
-require_once './Services/AdminService.php';
-require_once './Controllers/AdminController.php';
 require_once './Routes/AdminRoute.php';
-
 //Client_Album
-require_once './Services/ClientAlbumService.php';
-require_once './Controllers/ClientAlbumController.php';
 require_once './Routes/ClientAlbumRoute.php';
-
 //Client_Artist
-require_once './Services/ClientArtistService.php';
-require_once './Controllers/ClientArtistController.php';
 require_once './Routes/ClientArtistRoute.php';
-
-
+//Client_Playlist
+require_once './Routes/ClientPlaylistRoute.php';
+//Playlist_Music
+require_once './Routes/PlaylistMusicRoute.php';
 
 
 //Database Configuration
@@ -46,54 +34,43 @@ $method = $_SERVER['REQUEST_METHOD'];
 $uri = $_SERVER['REQUEST_URI'];
 
 // Album
-$albumService = new AlbumService($db);
-$albumController = new AlbumController($albumService);
-$albumRoute = new AlbumRoute($albumController);
-
+$albumRoute = new AlbumRoute($db);
 // Playlist
-$playlistService = new PlaylistService($db);
-$playlistController = new PlaylistController($playlistService);
-$playlistRoute = new PlaylistRoute($playlistController);
-
+$playlistRoute = new PlaylistRoute($db);
 // Admin
-$adminService = new adminService($db);
-$adminController = new adminController($adminService);
-$adminRoute = new adminRoute($adminController);
-
+$adminRoute = new adminRoute($db);
 // Client_Album
-$client_albumService = new ClientAlbumService($db);
-$client_albumController = new clientAlbumController($client_albumService);
-$client_albumRoute = new ClientAlbumRoute($client_albumController);
-
+$client_albumRoute = new ClientAlbumRoute($db);
 // Client_Artist
-$client_artistService = new ClientArtistService($db);
-$client_artistController = new clientArtistController($client_artistService);
-$client_artistRoute = new ClientArtistRoute($client_artistController);
+$client_artistRoute = new ClientArtistRoute($db);
+// Client_Playlist
+$client_playlistRoute = new ClientPlaylistRoute($db);
+// Playlist_Music
+$playlist_musicRoute = new PlaylistMusictRoute($db);
 
-// Use the appropriate request handler
-if (stripos($uri, '/api/album') !== false) {
-    $albumRoute->handleRequest($method, $uri);
-}
 
-// Use the appropriate request handler
-else if (stripos($uri, '/api/playlist') !== false) {
-    $playlistRoute->handleRequest($method, $uri);
-}
-// Use the appropriate request handler
-else if (stripos($uri, '/api/admin') !== false) {
-    $adminRoute->handleRequest($method, $uri);
-}
-// Use the appropriate request handler
-else if (stripos($uri, '/api/client_album') !== false) {
-    $client_albumRoute->handleRequest($method, $uri);
-}
-// Use the appropriate request handler
-else if (stripos($uri, '/api/client_artist') !== false) {
-    $client_artistRoute->handleRequest($method, $uri);
-}
 
-else{
-    echo json_encode(['error' => 'Invalid route']);
+
+
+// Routes
+if($albumRoute->handleRequest($method, $uri)) return;
+if($playlistRoute->handleRequest($method, $uri)) return;
+if($adminRoute->handleRequest($method, $uri)) return;
+if($client_albumRoute->handleRequest($method, $uri)) return;
+if($client_artistRoute->handleRequest($method, $uri)) return;
+if($client_playlistRoute->handleRequest($method, $uri)) return;
+if($playlist_musicRoute->handleRequest($method, $uri)) return;
+
+// Handle invalid routes with a 404 status code
+sendJsonResponse(['error' => 'Not Found'], 404);
+
+function sendJsonResponse($data, $statusCode = 404)
+{
+    header("Content-Type: application/json");
+    http_response_code($statusCode);
+    echo json_encode($data);
+    
+    
 }
 
 

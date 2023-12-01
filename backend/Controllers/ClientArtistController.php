@@ -1,13 +1,15 @@
 <?php
 
+require_once './Services/ClientArtistService.php';
+
 class ClientArtistController
 {
 
     private $client_artistService;
 
-    public function __construct($client_artistService)
+    public function __construct($db)
     {
-        $this->client_artistService = $client_artistService;
+        $this->client_artistService = new ClientArtistService($db);
     }
 
     public function create()
@@ -15,7 +17,7 @@ class ClientArtistController
         $requestData = json_decode(file_get_contents('php://input'), true);
 
         // Check for required fields
-        if (!$requestData  || empty($requestData['client_id'])) {
+        if (!$requestData  || empty($requestData['client_id']) || empty($requestData['artist_id'])) {
             $this->sendJsonResponse(['error' => 'Invalid request data'], 400);
             return;
         }
@@ -33,18 +35,18 @@ class ClientArtistController
     {
         try {
             $client_artists = $this->client_artistService->getAll();
-            $this->sendJsonResponse($client_artists);
+            $this->sendJsonResponse($client_artists,200);
         } catch (PDOException $e) {
             $this->sendJsonResponse(["error" => "Database error: " . $e->getMessage()], 500);
         }
     }
 
-    public function getById($id)
+    public function getById($client_id, $artist_id)
     {
         try {
-            $client_artist = $this->client_artistService->getById($id);
+            $client_artist = $this->client_artistService->getById($client_id, $artist_id);
             if ($client_artist) {
-                $this->sendJsonResponse($client_artist);
+                $this->sendJsonResponse($client_artist,200);
             } else {
                 $this->sendJsonResponse(["error" => "Client_artist not found"], 404);
             }
@@ -54,7 +56,7 @@ class ClientArtistController
 
     }
 
-    public function update($id) {
+    public function update($client_id, $artist_id) {
         $requestData = json_decode(file_get_contents('php://input'), true);
 
         if (!$requestData) {
@@ -63,10 +65,10 @@ class ClientArtistController
         }
 
         try {
-            $updatedclient_artist= $this->client_artistService->update($id, $requestData);
+            $updatedclient_artist= $this->client_artistService->update($client_id, $artist_id, $requestData);
 
             if ($updatedclient_artist) {
-                $this->sendJsonResponse($updatedclient_artist);
+                $this->sendJsonResponse($updatedclient_artist,200);
             } else {
                 $this->sendJsonResponse(['error' => 'Client_artist not found'], 404);
             }
@@ -75,28 +77,13 @@ class ClientArtistController
         }
     }
 
-   public function delete($id) {
-        try {
-            $isDeleted = $this->client_artistService->delete($id);
-
-            if ($isDeleted) {
-                $this->sendJsonResponse(['message'=> 'Client_artist deleted successfuly']);
-            } else {
-                $this->sendJsonResponse(['error'=> 'Client_artist not found'], 404);
-            }
-            
-        } catch (PDOException $e) {
-            $this->sendJsonResponse(['error'=> 'Database error' .$e->getMessage()], 500);
-        }
-    }
-
-    public function deleteByClientAndArtist($clientId, $artistId)
+    public function delete($clientId, $artistId)
     {
         try {
-            $isDeleted = $this->client_artistService->deleteByClientAndArtist($clientId, $artistId);
+            $isDeleted = $this->client_artistService->delete($clientId, $artistId);
 
             if ($isDeleted) {
-                $this->sendJsonResponse(['message' => 'Client_artist deleted successfully']);
+                $this->sendJsonResponse(['message' => 'Client_artist deleted successfully'],200);
             } else {
                 $this->sendJsonResponse(['error' => 'Client_artist not found'], 404);
             }
@@ -107,10 +94,11 @@ class ClientArtistController
     }
 
 
-    private function sendJsonResponse($data, $statusCode = 200)
+    private function sendJsonResponse($data, $statusCode = 404)
     {
         header("Content-Type: application/json");
         http_response_code($statusCode);
         echo json_encode($data);
     }
+    
 }

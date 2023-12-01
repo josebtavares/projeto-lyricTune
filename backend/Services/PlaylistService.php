@@ -58,4 +58,5 @@ class PlaylistService
 
         return $stmt->rowCount() > 0;
     }
+    
 }

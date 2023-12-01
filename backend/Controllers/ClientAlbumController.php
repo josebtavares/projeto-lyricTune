@@ -1,13 +1,15 @@
 <?php
 
+require_once './Services/ClientAlbumService.php';
+
 class ClientAlbumController
 {
 
     private $client_albumService;
 
-    public function __construct($client_albumService)
+    public function __construct($db)
     {
-        $this->client_albumService = $client_albumService;
+        $this->client_albumService = new ClientAlbumService($db);
     }
 
     public function create()
@@ -15,7 +17,7 @@ class ClientAlbumController
         $requestData = json_decode(file_get_contents('php://input'), true);
 
         // Check for required fields
-        if (!$requestData  || empty($requestData['client_id'])) {
+        if (!$requestData  || empty($requestData['client_id']) || empty($requestData['album_id'])) {
             $this->sendJsonResponse(['error' => 'Invalid request data'], 400);
             return;
         }
@@ -33,18 +35,18 @@ class ClientAlbumController
     {
         try {
             $client_albums = $this->client_albumService->getAll();
-            $this->sendJsonResponse($client_albums);
+            $this->sendJsonResponse($client_albums,200);
         } catch (PDOException $e) {
             $this->sendJsonResponse(["error" => "Database error: " . $e->getMessage()], 500);
         }
     }
 
-    public function getById($id)
+    public function getById($client_id, $album_id)
     {
         try {
-            $client_album = $this->client_albumService->getById($id);
+            $client_album = $this->client_albumService->getById($client_id, $album_id);
             if ($client_album) {
-                $this->sendJsonResponse($client_album);
+                $this->sendJsonResponse($client_album,200);
             } else {
                 $this->sendJsonResponse(["error" => "Client_album not found"], 404);
             }
@@ -54,7 +56,7 @@ class ClientAlbumController
 
     }
 
-    public function update($id) {
+    public function update($client_id, $album_id) {
         $requestData = json_decode(file_get_contents('php://input'), true);
 
         if (!$requestData) {
@@ -63,10 +65,10 @@ class ClientAlbumController
         }
 
         try {
-            $updatedclient_album= $this->client_albumService->update($id, $requestData);
+            $updatedclient_album= $this->client_albumService->update($client_id, $album_id, $requestData);
 
             if ($updatedclient_album) {
-                $this->sendJsonResponse($updatedclient_album);
+                $this->sendJsonResponse($updatedclient_album,200);
             } else {
                 $this->sendJsonResponse(['error' => 'Client_album not found'], 404);
             }
@@ -75,29 +77,13 @@ class ClientAlbumController
         }
     }
 
-   public function delete($id) {
-        try {
-            $isDeleted = $this->client_albumService->delete($id);
-
-            if ($isDeleted) {
-                $this->sendJsonResponse(['message'=> 'Client_album deleted successfuly']);
-            } else {
-                $this->sendJsonResponse(['error'=> 'Client_album not found'], 404);
-            }
-            
-        } catch (PDOException $e) {
-            $this->sendJsonResponse(['error'=> 'Database error' .$e->getMessage()], 500);
-        }
-    
-    }
-
-    public function deleteByClientAndAlbum($clientId, $albumId)
+    public function delete($clientId, $albumId)
     {
         try {
-            $isDeleted = $this->client_albumService->deleteByClientAndAlbum($clientId, $albumId);
+            $isDeleted = $this->client_albumService->delete($clientId, $albumId);
 
             if ($isDeleted) {
-                $this->sendJsonResponse(['message' => 'Client_album deleted successfully']);
+                $this->sendJsonResponse(['message' => 'Client_album deleted successfully'],200);
             } else {
                 $this->sendJsonResponse(['error' => 'Client_album not found'], 404);
             }
@@ -108,10 +94,11 @@ class ClientAlbumController
     }
 
 
-    private function sendJsonResponse($data, $statusCode = 200)
+    private function sendJsonResponse($data, $statusCode = 404)
     {
         header("Content-Type: application/json");
         http_response_code($statusCode);
         echo json_encode($data);
     }
+    
 }

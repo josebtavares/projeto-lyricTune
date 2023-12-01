@@ -1,13 +1,16 @@
 <?php
 
+
+require_once './Services/AdminService.php';
+
 class AdminController
 {
 
     private $adminService;
 
-    public function __construct($adminService)
+    public function __construct($db)
     {
-        $this->adminService = $adminService;
+        $this->adminService = new AdminService($db);
     }
 
     public function create()
@@ -33,7 +36,7 @@ class AdminController
     {
         try {
             $admins = $this->adminService->getAll();
-            $this->sendJsonResponse($admins);
+            $this->sendJsonResponse($admins,200);
         } catch (PDOException $e) {
             $this->sendJsonResponse(["error" => "Database error: " . $e->getMessage()], 500);
         }
@@ -44,7 +47,7 @@ class AdminController
         try {
             $admin = $this->adminService->getById($id);
             if ($admin) {
-                $this->sendJsonResponse($admin);
+                $this->sendJsonResponse($admin,200);
             } else {
                 $this->sendJsonResponse(["error" => "Admin not found"], 404);
             }
@@ -66,7 +69,7 @@ class AdminController
             $updatedAdmin= $this->adminService->update($id, $requestData);
 
             if ($updatedAdmin) {
-                $this->sendJsonResponse($updatedAdmin);
+                $this->sendJsonResponse($updatedAdmin,200);
             } else {
                 $this->sendJsonResponse(['error' => 'Admin not found'], 404);
             }
@@ -80,7 +83,7 @@ class AdminController
         $isDeleted = $this->adminService->delete($id);
 
         if ($isDeleted) {
-            $this->sendJsonResponse(['message'=> 'Admin deleted successfuly']);
+            $this->sendJsonResponse(['message'=> 'Admin deleted successfuly'],200);
         } else {
             $this->sendJsonResponse(['error'=> 'Admin not found'], 404);
         }
@@ -91,10 +94,11 @@ class AdminController
 }
 
 
-    private function sendJsonResponse($data, $statusCode = 200)
+    private function sendJsonResponse($data, $statusCode = 404)
     {
         header("Content-Type: application/json");
         http_response_code($statusCode);
         echo json_encode($data);
     }
+    
 }
