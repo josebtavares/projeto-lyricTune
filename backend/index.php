@@ -1,4 +1,8 @@
 <?php
+//User
+require_once 'Routes/user.route.php';
+//Client
+require_once 'Routes/client.route.php';
 
 //Album
 require_once './Routes/AlbumRoute.php';
@@ -61,6 +65,9 @@ $musicRoute = new MusicRoute($db);
 $genre_musicRoute = new GenreMusicRoute($db);
 
 
+if ( stripos($uri, 'user') !== false || stripos($uri, 'client') !== false ) {
+   die;
+}
 
 // Routes
 if($albumRoute->handleRequest($method, $uri)) return;
