@@ -1,4 +1,9 @@
 <?php
+
+header("Access-Control-Allow-Origin: * ");
+header("Access-Control-Allow-Headers: * ");
+header("Content-type: aplication/json");
+
 //User
 require_once 'Routes/user.route.php';
 //Client
