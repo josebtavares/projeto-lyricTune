@@ -53,7 +53,7 @@ $albumRoute = new AlbumRoute($db);
 // Playlist
 $playlistRoute = new PlaylistRoute($db);
 // Admin
-$adminRoute = new adminRoute($db);
+$adminRoute = new AdminRoute($db);
 // Client_Album
 $client_albumRoute = new ClientAlbumRoute($db);
 // Client_Artist
