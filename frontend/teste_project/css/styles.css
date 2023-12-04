@@ -1,0 +1,268 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: black;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button {
+    border: none;
+
+}
+
+header {
+    border-radius: 0rem 0rem 3.125rem 3.125rem;
+    opacity: 0.9;
+    background: url("../images/background_img.png"), lightgray 50% / cover no-repeat;
+    height: 90vh;
+    color: #fff;
+    font-size: 1.25rem;
+
+    /* justify-content: space-between; */
+    padding: 1rem;
+}
+
+.header_container {
+    display: flex;
+
+}
+
+
+nav {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+}
+
+ul {
+    margin-left: 22rem;
+    list-style: none;
+    display: flex;
+    gap: 2.5rem;
+}
+
+ul li {
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: border-bottom 0.3s ease-in;
+}
+
+ul li:hover {
+    border-bottom: 2px #FFF solid;
+}
+
+.user_container {
+    text-align: center;
+    height: 80vh;
+    width: 17rem;
+}
+
+.content_header {
+    margin-top: -18rem;
+    text-align: center;
+    width: 100%;
+}
+
+h1 {
+    font-family: 'Abril Fatface', serif;
+    font-size: 6.25rem;
+}
+
+.input_header {
+    width: 34rem;
+    height: 3.5rem;
+    border-radius: 3.34375rem;
+    background: #D9D9D9;
+    border: none;
+    margin-left: 5px;
+    outline: none;
+
+}
+.search_header{
+    margin: 0 auto;
+    width: 36rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: #D9D9D9;
+    border-radius: 3.34375rem;
+
+}
+.icon_search {
+    display: flex;
+    align-items: center;
+    height: 3.5375rem;
+    color: #5A5A5A;
+    border-bottom-right-radius: 50%;
+    border-top-right-radius:    50%;
+}
+
+
+#app {
+    flex-direction: column;
+    display: flex;
+    gap: 1rem;
+    color: black;
+    text-align: center;
+    padding: 1rem;
+    /* margin: 20px; */
+}
+
+/* Card Container */
+.card_container {
+    height: auto;
+    width: 100%;
+    background-color: #171717;
+    border-radius: 1rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left;
+}
+
+.title_container {
+    color: white;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.chevron_container {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.chev_icon {
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.chev_icon:hover {
+    transform: scale(1.2);
+}
+
+
+
+.music_card_container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 0.7rem;
+}
+
+.showall_container {
+    margin-top: 0.5rem;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    justify-content: end;
+}
+
+
+.showall_container p {
+    border-bottom: 2px solid transparent;
+    transition: border-bottom 0.3s ease-in-out;
+}
+
+.showall_container p:hover {
+    border-bottom: 2px solid white;
+}
+
+/* End of Card Container */
+
+/* Music Card */
+.music_card {
+    position: relative;
+    width: 15.34831rem;
+    height: 18.5rem;
+    background-color: #2F2F2F;
+    border-radius: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    box-shadow: 1px 1px 1px #5A5A5A;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.music_card:hover {
+    background-color: #5A5A5A;
+
+}
+
+.music_image_container {
+    height: 12rem;
+    border-radius: 1.5rem;
+}
+
+.music_img {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    border-radius: 1.5rem;
+}
+
+.music_description {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    gap: 1rem;
+}
+
+.music_title {
+    margin-top: 1rem;
+    color: #FFF;
+
+}
+
+.music_artist {
+    color: #AFAFAF;
+}
+
+.icon_container {
+    width: 100%;
+    display: flex;
+    justify-content: end;
+    color: #FFF;
+}
+
+.play_container {
+    position: absolute;
+    left: 10.5rem;
+    top: 11rem;
+    transform: translate(-50%, -50%);
+    visibility: hidden;
+    transition: top 0.3s ease;
+}
+
+.play_icon {
+    font-size: 3rem;
+    color: white;
+
+}
+
+.music_card:hover .play_container {
+    top: 10.6rem;
+    visibility: visible;
+}
+
+
+
+
+/* End of Music Card */
