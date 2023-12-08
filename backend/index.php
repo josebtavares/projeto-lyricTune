@@ -32,10 +32,10 @@ require_once './Routes/GenreMusicRoute.php';
 
 
 //Database Configuration
-$host = 'localhost';
-$dbname = 'lyricTune';
-$username = 'root';
-$password = '';
+$host = 'db4free.net';
+$dbname = 'lyrictune';
+$username = 'azhus_lda';
+$password = 'codeforlife';
 
 try {
     $db = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
