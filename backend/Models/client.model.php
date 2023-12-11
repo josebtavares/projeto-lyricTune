@@ -10,9 +10,15 @@
         
         public function __construct(){
             self::$id = '0';
+            self::$name = '';
+            self::$email = '';
+            self::$password = '';
             self::$user_id = '0';
             self::$photo_url = '';
             self::$description = '';
+            self::$photo_url = 'https://i.ibb.co/xFFfc2N/default-profile-img.jpg';
+            self::$birth_date = '1000-01-01';
+            self::$token = null;
         }
 
         public static function setAll($name, $email,$password){
