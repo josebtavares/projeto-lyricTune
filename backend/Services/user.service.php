@@ -22,7 +22,7 @@
             }
             if($column != 'id' && $column != null ){
                 $query = "SELECT * FROM user where $column like '%$val%' ";                
-            }
+            } 
 
             $run = $Link->prepare($query);
             try {
@@ -55,12 +55,13 @@
         public function mutateUser($user = null, $action, $column=null, $val = null, $id = null, $from_clie = false){
             global $Link;
 
+            $nameUser = $user::$name;
             if($action == "insert"){
-                $msg_success = "Successfull {user} INSERTED :)";
+                $msg_success = "Successfull {user - $nameUser } INSERTED :)";
                 $sql = "INSERT INTO user (name,email, password, birth_date, photo_url ) VALUES (:nam, :email, :pass, :birth, :photo)";                
             }
             if($action == "update"){
-                $msg_success = "Successfull {user} UPDATED :)";
+                $msg_success = "Successfull {user - $nameUser } UPDATED :)";
                 
                 if ($column != null && $val != null) {
                     $sql = "UPDATE user set  $column = '$val' where id = '$id' ";
@@ -69,38 +70,43 @@
                     
                 }
             }
-
+            
             if ($action == "delete") {
-                $msg_success = "Successfull {user} DELETED :)";
+                $msg_success = "Successfull {user - id $id } DELETED :)";
                 if($id == null){
                     $this->messageSend("Request DELETE must have un id. Please try again with an id",400);
                     die;
                 }
                 $sql = "DELETE FROM user WHERE id= '$id' ";
             }
-
+            
             $run = $Link->prepare($sql);
-
+            
             if($action != "delete"){
                 if ($column == null && $val == null  || $action == "insert" ) {
-                    $action == "update" ?? $run->bindValue(":id", $user::$id) ;
+                    
+                    if($action == "update" ){
+                        $run->bindValue(":id", $user::$id) ;
+                    }
+                    $run->bindValue(":id", $user::$id) ;
                     $run->bindValue(":nam",   $user::$name);
-                    $run->bindValue(":email", $user::$email);
-                    $run->bindValue(":pass",  $user::$password);
-                    $run->bindValue(":photo", $user::$photo_url);
-                    $run->bindValue(":birth", $user::$birth_date);
-
+                    $run->bindValue(":email", $user::$email);      
+                    $run->bindValue(":pass",  $user::$password);    
+                    $run->bindValue(":photo", $user::$photo_url);  
+                    $run->bindValue(":birth", $user::$birth_date); 
+                    
                 }
             }
-
+            
             //    echo json_encode([
             //         "Message"=> $msg_success,
             //         "id" => $Link->lastInsertId() ?? null
             //     ]);
             //     die;
-
             try {
+                
                 $run->execute();
+               
 
                 if($from_clie == true ){
                        
