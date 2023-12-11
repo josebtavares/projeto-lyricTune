@@ -13,6 +13,7 @@
 
         public function updateClient($client){
             global $Link;
+            
             $sql = "UPDATE `client` INNER JOIN user on client.user_id = user.id 
                 set user.name = :name, user.email = :email, user.password = :pass,
                 user.photo_url = :photo, user.birth_date = :birth, client.description = :description
@@ -34,13 +35,17 @@
                 return true;
             } catch (PDOException $e) {
                 echo json_encode([
-                    "Message"=> "Error with QUERY",
+                    "Message"=> "Error with SQL",
                     "ERROR" => $e->getMessage()
                 ]);
                 die;
             }
 
         }
+
+
+
+
 
         public function getClient($column =null , $val = null, $retorno = false ){
             global $Link;
