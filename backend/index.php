@@ -9,6 +9,9 @@ require_once 'Routes/user.route.php';
 //Client
 require_once 'Routes/client.route.php';
 
+// Auth
+require_once 'Middleware/auth.php';
+
 //Album
 require_once './Routes/AlbumRoute.php';
 //Playlist
